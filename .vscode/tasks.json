@@ -1,0 +1,1167 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Inspect frontend Nx targets",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"show",
+				"project",
+				"@sass-project/frontend",
+				"--json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify backend Nx targets",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"show",
+				"project",
+				"@sass-project/backend",
+				"--json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify backend dev target",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"show",
+				"project",
+				"@sass-project/backend",
+				"--json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify root npm scripts",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify Nx dev targets",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"show",
+				"project",
+				"frontend",
+				"--json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify Nx backend target",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"show",
+				"project",
+				"backend",
+				"--json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate local Compose config",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"config",
+				"--quiet"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate Prisma schema",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"prisma",
+				"validate",
+				"--config",
+				"libs/database/prisma.config.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Install Prisma database adapter",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"install",
+				"--workspace",
+				"@sass-project/database",
+				"--legacy-peer-deps"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Start local PostgreSQL service",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"db:up"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Revalidate Docker Compose",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"config",
+				"--quiet"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "List available root scripts",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Generate Prisma client",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"db:generate"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Typecheck Prisma database library",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"@sass-project/database:typecheck"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Install PostgreSQL adapter without workspace changes",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"install",
+				"--no-save",
+				"--package-lock=false",
+				"--ignore-scripts",
+				"--workspaces=false",
+				"@prisma/adapter-pg@7.10.0",
+				"pg@8.16.3"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check local PostgreSQL Compose config",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"config",
+				"--quiet"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Regenerate Prisma client",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"db:generate"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Recheck Prisma database typecheck",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"@sass-project/database:typecheck"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Sync npm workspace lockfile",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"install",
+				"--package-lock-only",
+				"--ignore-scripts",
+				"--legacy-peer-deps"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Final database typecheck",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"@sass-project/database:typecheck"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Final Compose parse",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"config",
+				"--quiet"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Final Prisma schema validation",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"prisma",
+				"validate",
+				"--config",
+				"libs/database/prisma.config.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify fast backend dev target",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"show",
+				"project",
+				"backend",
+				"--json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Smoke test fast backend startup",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"PORT=0 timeout -s INT 10s npx nx dev backend"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Smoke test direct backend runner",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"cd apps/backend && PORT=0 timeout -s INT 15s node --watch --import @swc-node/register/esm-register src/main.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Test CommonJS SWC watch runner",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"cd apps/backend && PORT=0 timeout -s INT 10s node --watch -r @swc-node/register src/main.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Smoke test SWC backend dev startup",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"cd apps/backend && NODE_ENV=development PORT=0 timeout -s INT 8s node --watch --import @swc-node/register/esm-register src/main.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Typecheck backend after runner change",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"backend:typecheck"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify backend dev target config",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"show",
+				"project",
+				"backend",
+				"--json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Inspect target definitions",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"show",
+				"project",
+				"backend",
+				"--json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check GraphQL packages",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"ls",
+				"@apollo/server",
+				"graphql",
+				"@as-integrations/express5",
+				"--depth=0"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate todo Prisma schema",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"prisma",
+				"validate",
+				"--config",
+				"libs/database/prisma.config.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Generate todo Prisma client",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"db:generate"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Update npm lockfile for todo API",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"install",
+				"--package-lock-only",
+				"--ignore-scripts",
+				"--legacy-peer-deps"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Generate initial todo migration SQL",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"prisma",
+				"migrate",
+				"diff",
+				"--from-empty",
+				"--to-schema-datamodel",
+				"libs/database/prisma/schema.prisma",
+				"--script",
+				"--config",
+				"libs/database/prisma.config.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check Docker database service",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"db:up"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Create local todo migration",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"DATABASE_URL='postgresql://devuser:devpassword@localhost:5433/saas_project?schema=public' npx prisma migrate dev --name init_todos --config libs/database/prisma.config.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Install todo GraphQL dependencies",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"install",
+				"--ignore-scripts",
+				"--legacy-peer-deps"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check local todo database exists",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"exec",
+				"-T",
+				"postgres",
+				"psql",
+				"-U",
+				"devuser",
+				"-d",
+				"postgres",
+				"-tAc",
+				"SELECT 1 FROM pg_database WHERE datname='saas_project'"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Create saas_project in local Postgres",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"exec",
+				"-T",
+				"postgres",
+				"createdb",
+				"-U",
+				"devuser",
+				"saas_project"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Update local Postgres container config",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"db:up"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Apply todo migration to saas_project",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"DATABASE_URL='postgresql://devuser:devpassword@localhost:5433/saas_project?schema=public' npx prisma migrate dev --config libs/database/prisma.config.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Lint todo integration projects",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=lint",
+				"--projects=backend,frontend,contracts,database",
+				"--parallel=2"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Typecheck todo integration projects",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=typecheck",
+				"--projects=backend,frontend,contracts,database",
+				"--parallel=2"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check Prisma library types",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"@sass-project/database:typecheck",
+				"--skip-nx-cache"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check contract types",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"@sass-project/contracts:typecheck",
+				"--skip-nx-cache"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Typecheck integration targets",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=typecheck",
+				"--projects=backend,frontend,contracts,database",
+				"--parallel=1",
+				"--outputStyle=static"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check Prisma migration status",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"DATABASE_URL='postgresql://devuser:devpassword@localhost:5433/saas_project?schema=public' npx prisma migrate status --config libs/database/prisma.config.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Lint integration targets",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=lint",
+				"--projects=backend,frontend,contracts,database",
+				"--parallel=1",
+				"--outputStyle=static"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check todo GraphQL endpoint",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"-e",
+				"fetch('http://localhost:3333/graphql',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({query:'{ todos { id title completed createdAt updatedAt } }'})}).then(async r=>{const b=await r.text(); console.log(r.status,b); if(!r.ok) process.exitCode=1}).catch(e=>{console.error(e);process.exitCode=1})"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Sync todo workspace lockfile",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"install",
+				"--package-lock-only",
+				"--ignore-scripts",
+				"--legacy-peer-deps"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Typecheck todo integration",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=typecheck",
+				"--projects=backend,frontend,contracts,database",
+				"--parallel=1",
+				"--outputStyle=static",
+				"--skip-nx-cache"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Lint todo integration",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=lint",
+				"--projects=backend,frontend,contracts,database",
+				"--parallel=1",
+				"--outputStyle=static",
+				"--skip-nx-cache"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check Nx sync command options",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"sync",
+				"--help"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Synchronize Nx workspace references",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"sync"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Typecheck backend and shared libs",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=typecheck",
+				"--projects=backend,contracts,database",
+				"--parallel=1",
+				"--outputStyle=static",
+				"--skip-nx-cache"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Lint backend and shared libs",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=lint",
+				"--projects=backend,frontend,contracts,database",
+				"--parallel=1",
+				"--outputStyle=static",
+				"--skip-nx-cache"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Build frontend and todo backend",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=build",
+				"--projects=backend,frontend",
+				"--parallel=1",
+				"--outputStyle=static"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Build backend with SWC",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"backend:build:development",
+				"--outputStyle=static"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Generate CommonJS Prisma client",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"db:generate"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Retest backend Prisma build",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"backend:build:development",
+				"--outputStyle=static"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Build frontend",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"frontend:build:development",
+				"--outputStyle=static"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Start backend for smoke test",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"dev:backend"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Rebuild frontend",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"frontend:build:development",
+				"--outputStyle=static"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check PostgreSQL service",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"compose",
+				"ps",
+				"postgres"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Smoke test todo GraphQL CRUD",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"-e",
+				"const url='http://localhost:3333/graphql'; const sleep=ms=>new Promise(r=>setTimeout(r,ms)); async function gql(query,variables={}) { const res=await fetch(url,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({query,variables})}); const body=await res.json(); if(!res.ok||body.errors) throw new Error(JSON.stringify(body.errors||body)); return body.data; } (async()=>{ let ready=false; for(let i=0;i<30;i++){try{await gql('{ todos { id } }');ready=true;break}catch(e){if(i===29)throw e;await sleep(500)}} if(!ready)throw new Error('GraphQL API did not become ready'); const title='todo-crud-smoke-'+Date.now(); let id; try { const created=await gql('mutation($title:String!){createTodo(title:$title){id title completed}}',{title}); id=created.createTodo.id; if(created.createTodo.title!==title||created.createTodo.completed!==false)throw new Error('createTodo returned unexpected fields'); const listed=await gql('{todos{id title completed}}'); if(!listed.todos.some(todo=>todo.id===id))throw new Error('created todo missing from list'); const updated=await gql('mutation($id:ID!,$completed:Boolean!){updateTodo(id:$id,completed:$completed){id completed}}',{id,completed:true}); if(updated.updateTodo.completed!==true)throw new Error('updateTodo did not complete todo'); const deleted=await gql('mutation($id:ID!){deleteTodo(id:$id)}',{id}); if(deleted.deleteTodo!==id)throw new Error('deleteTodo returned unexpected id'); id=undefined; console.log('GraphQL todo CRUD smoke test passed (create, list, update, delete).'); } finally { if(id) await gql('mutation($id:ID!){deleteTodo(id:$id)}',{id}); } })().catch(error=>{console.error(error.message);process.exitCode=1});"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify GraphQL todo CRUD",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"-e",
+				"const assert=require('node:assert/strict'); const url='http://localhost:3333/graphql'; async function gql(query){const res=await fetch(url,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({query})});const body=await res.json();if(body.errors)throw Error(JSON.stringify(body.errors));return body.data;} (async()=>{const title='todo-crud-smoke-'+Date.now();let id;try{const created=await gql('mutation { createTodo(title: \"'+title+'\") { id title completed } }');assert.equal(created.createTodo.title,title);assert.equal(created.createTodo.completed,false);id=created.createTodo.id;const listed=await gql('{ todos { id title completed } }');assert.equal(listed.todos.some(todo=>todo.id===id),true);const updated=await gql('mutation { updateTodo(id: \"'+id+'\", completed: true) { id completed } }');assert.equal(updated.updateTodo.completed,true);const deleted=await gql('mutation { deleteTodo(id: \"'+id+'\") }');assert.equal(deleted.deleteTodo,id);id=undefined;console.log('GraphQL todo CRUD smoke test passed (create, list, update, delete).');}finally{if(id)await gql('mutation { deleteTodo(id: \"'+id+'\") }');}})().catch(error=>{console.error(error);process.exitCode=1});"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Typecheck todo stack",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=typecheck",
+				"--projects=backend,contracts,database",
+				"--parallel=1"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate contract exports",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=typecheck",
+				"--projects=backend,contracts,database",
+				"--parallel=1"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run GraphQL todo CRUD check",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/.todo-graphql-smoke.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Probe backend HTTP endpoint",
+			"type": "shell",
+			"command": "curl.exe",
+			"args": [
+				"-i",
+				"--max-time",
+				"3",
+				"http://127.0.0.1:3333/api"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Start GraphQL backend directly",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--watch",
+				"--conditions=@sass-project/source",
+				"--import",
+				"@swc-node/register/esm-register",
+				"apps/backend/src/main.ts"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Recheck todo GraphQL CRUD",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/.todo-graphql-smoke.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Recheck contract types",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=typecheck",
+				"--projects=backend,contracts,database",
+				"--parallel=1"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Build backend after dev fix",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"backend:build:development",
+				"--outputStyle=static"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run backend serve target",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"serve",
+				"backend",
+				"--configuration=development"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Smoke test live todo API",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/.todo-graphql-smoke.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check new Nx backend dev target",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"exec",
+				"--",
+				"cross-env",
+				"PORT=3341",
+				"nx",
+				"dev",
+				"backend"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run backend dev on test port",
+			"type": "shell",
+			"command": "env",
+			"args": [
+				"PORT=3341",
+				"npx",
+				"nx",
+				"dev",
+				"backend"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Inspect migration SQL",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short",
+				"libs/database/prisma/migrations",
+				"apps/backend/src/todo.resolvers.ts",
+				"libs/contracts/src/lib/todo.graphql.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify dev GraphQL todo CRUD",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"SMOKE_GRAPHQL_URL=http://localhost:3341/graphql node scripts/.todo-graphql-smoke.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify dev endpoint responds",
+			"type": "shell",
+			"command": "curl.exe",
+			"args": [
+				"-sS",
+				"--max-time",
+				"3",
+				"http://localhost:3341/api"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run and verify backend dev target",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"PORT=3341 npx nx dev backend --outputStyle=static"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Probe Nx dev port",
+			"type": "shell",
+			"command": "curl.exe",
+			"args": [
+				"-i",
+				"--max-time",
+				"2",
+				"http://127.0.0.1:3341/api"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Smoke test dev todo GraphQL CRUD",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"SMOKE_GRAPHQL_URL=http://127.0.0.1:3341/graphql node scripts/.todo-graphql-smoke.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify current GraphQL API query",
+			"type": "shell",
+			"command": "curl.exe",
+			"args": [
+				"-sS",
+				"-H",
+				"Content-Type: application/json",
+				"--data-binary",
+				"{\"query\":\"{ todos { id title completed } }\"}",
+				"http://127.0.0.1:3341/graphql"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Final build todo apps",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=build",
+				"--projects=backend,frontend",
+				"--parallel=1",
+				"--outputStyle=static"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Final lint todo integration",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run-many",
+				"--target=lint",
+				"--projects=backend,frontend,contracts,database",
+				"--parallel=1",
+				"--outputStyle=static",
+				"--skip-nx-cache"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify todo migration state",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"DATABASE_URL='postgresql://devuser:devpassword@localhost:5433/saas_project?schema=public' npx prisma migrate status --config libs/database/prisma.config.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Start todo GraphQL backend",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"dev",
+				"backend"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}

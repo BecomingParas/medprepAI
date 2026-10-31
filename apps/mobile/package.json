@@ -1,0 +1,23 @@
+{
+  "name": "@sass-project/mobile",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "eas-build-post-install": "cd ../../ && node tools/scripts/eas-build-post-install.mjs . apps/mobile"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^15.1.0",
+    "@expo/metro": "~56.0.0",
+    "@testing-library/react-native": "*",
+    "expo": "~56.0.0",
+    "expo-splash-screen": "~56.0.10",
+    "expo-status-bar": "~56.0.4",
+    "expo-system-ui": "~56.0.5",
+    "jest-expo": "~56.0.0",
+    "react": "^19.0.0",
+    "react-native": "0.85.3",
+    "react-native-svg": "15.12.1",
+    "react-native-svg-transformer": "~1.5.1",
+    "react-native-web": "~0.21.0"
+  }
+}

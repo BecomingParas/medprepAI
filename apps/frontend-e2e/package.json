@@ -1,0 +1,10 @@
+{
+  "name": "@sass-project/frontend-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@sass-project/frontend"
+    ]
+  }
+}
