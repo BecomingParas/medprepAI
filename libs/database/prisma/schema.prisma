@@ -19,3 +19,120 @@ model Todo {
 
   @@index([completed, createdAt])
 }
+
+model User {
+  id            String      @id
+  name          String
+  email         String      @unique
+  emailVerified Boolean     @default(false)
+  image         String?
+  role          String      @default("user")
+  createdAt     DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime    @updatedAt @db.Timestamptz(3)
+  sessions      Session[]
+  accounts      Account[]
+  attempts      Attempt[]
+  bookmarks     Bookmark[]
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime @db.Timestamptz(3)
+  token     String   @unique
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime? @db.Timestamptz(3)
+  refreshTokenExpiresAt DateTime? @db.Timestamptz(3)
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt             DateTime  @updatedAt @db.Timestamptz(3)
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime @db.Timestamptz(3)
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([identifier])
+}
+
+model Chapter {
+  id       String @id @default(uuid()) @db.Uuid
+  subject  String
+  name     String
+  overview String @default("")
+
+  @@unique([subject, name])
+}
+
+model Question {
+  id           String     @id @default(uuid()) @db.Uuid
+  subject      String
+  chapter      String
+  difficulty   String     @default("medium")
+  stem         String
+  options      Json
+  correctIndex Int
+  explanation  String
+  visualPrompt String
+  imageUrl     String?
+  provenance   String     @default("sample")
+  sourceTitle  String?
+  sourceUrl    String?
+  sourceYear   Int?
+  sourceNotes  String?
+  createdAt    DateTime   @default(now()) @db.Timestamptz(3)
+  attempts     Attempt[]
+  bookmarks    Bookmark[]
+
+  @@index([subject, chapter])
+}
+
+model Attempt {
+  id            String    @id @default(uuid()) @db.Uuid
+  userId        String
+  questionId    String?   @db.Uuid
+  selectedIndex Int
+  isCorrect     Boolean
+  createdAt     DateTime  @default(now()) @db.Timestamptz(3)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question      Question? @relation(fields: [questionId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([questionId])
+}
+
+model Bookmark {
+  userId     String
+  questionId String   @db.Uuid
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, questionId])
+  @@index([questionId])
+}

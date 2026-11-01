@@ -7,13 +7,24 @@ import 'dotenv/config';
 
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@as-integrations/express5';
-import { todoTypeDefs } from '@sass-project/contracts';
+import { learningTypeDefs, todoTypeDefs } from '@sass-project/contracts';
+import { auth } from '@sass-project/auth';
 import { prisma } from '@sass-project/database';
 import express from 'express';
+import type { IncomingHttpHeaders } from 'http';
 import * as path from 'path';
+import { learningResolvers } from './learning.resolvers.js';
 import { todoResolvers } from './todo.resolvers.js';
 
 const app = express();
+
+function toWebHeaders(headers: IncomingHttpHeaders): Headers {
+  const result = new Headers();
+  for (const [name, value] of Object.entries(headers)) {
+    if (value !== undefined) result.set(name, Array.isArray(value) ? value.join(', ') : value);
+  }
+  return result;
+}
 
 const assetsPath =
   process.env.NODE_ENV === 'development'
@@ -63,6 +74,7 @@ app.use((req, res, next) => {
   if (origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
   }
 
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -81,8 +93,14 @@ app.get('/api', (req, res) => {
 });
 
 const graphqlServer = new ApolloServer({
-  typeDefs: todoTypeDefs,
-  resolvers: todoResolvers,
+  typeDefs: [todoTypeDefs, learningTypeDefs],
+  resolvers: {
+    Query: { ...todoResolvers.Query, ...learningResolvers.Query },
+    Mutation: { ...todoResolvers.Mutation, ...learningResolvers.Mutation },
+    Todo: todoResolvers.Todo,
+    LearningQuestion: learningResolvers.LearningQuestion,
+    LearningAttempt: learningResolvers.LearningAttempt,
+  },
   introspection: process.env.NODE_ENV !== 'production',
 });
 
@@ -93,7 +111,10 @@ async function startServer() {
     '/graphql',
     express.json(),
     expressMiddleware(graphqlServer, {
-      context: async () => ({ prisma }),
+      context: async ({ req }) => {
+        const session = await auth.api.getSession({ headers: toWebHeaders(req.headers) });
+        return { prisma, user: session?.user ?? null };
+      },
     })
   );
 

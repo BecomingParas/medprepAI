@@ -2,29 +2,25 @@ import { NextResponse } from 'next/server';
 import {
   ApiError,
   apiErrorResponse,
-  createAdminClient,
   isRecord,
   parseJson,
   requireAuthenticatedUser,
 } from '@/lib/server/api-auth';
+import { prisma } from '@sass-project/database';
 
 const GATEWAY = 'https://ai.gateway.lovable.dev';
 const MODEL = 'openai/gpt-image-2.5-sunburst';
 
 export async function POST(request: Request) {
   try {
-    const { supabase } = await requireAuthenticatedUser(request);
+    await requireAuthenticatedUser(request);
     const payload = await parseJson(request);
     if (!isRecord(payload) || typeof payload.questionId !== 'string') {
       throw new ApiError('A question id is required.', 400);
     }
-    const { data: question, error } = await supabase
-      .from('questions')
-      .select('id,visual_prompt,image_url,subject')
-      .eq('id', payload.questionId)
-      .single();
-    if (error || !question) throw new ApiError('Question not found.', 404);
-    if (question.image_url) return NextResponse.json({ imageUrl: question.image_url });
+    const question = await prisma.question.findUnique({ where: { id: payload.questionId } });
+    if (!question) throw new ApiError('Question not found.', 404);
+    if (question.imageUrl) return NextResponse.json({ imageUrl: question.imageUrl });
 
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new ApiError('AI is not configured.', 503);
@@ -36,7 +32,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         model: MODEL,
-        prompt: `${question.visual_prompt}. Accurate ${question.subject} study illustration for medical entrance students, clear readable English labels, minimal clutter.`,
+        prompt: `${question.visualPrompt}. Accurate ${question.subject} study illustration for medical entrance students, clear readable English labels, minimal clutter.`,
         quality: 'low',
         size: '1024x1024',
         output_format: 'jpeg',
@@ -56,11 +52,7 @@ export async function POST(request: Request) {
     const base64 = result.data?.[0]?.b64_json;
     if (!base64) throw new ApiError('No image was returned.', 502);
     const imageUrl = `data:image/jpeg;base64,${base64}`;
-    const { error: saveError } = await createAdminClient()
-      .from('questions')
-      .update({ image_url: imageUrl })
-      .eq('id', question.id);
-    if (saveError) throw new ApiError('The generated image could not be saved.', 500);
+    await prisma.question.update({ where: { id: question.id }, data: { imageUrl } });
     return NextResponse.json({ imageUrl });
   } catch (error) {
     return apiErrorResponse(error);

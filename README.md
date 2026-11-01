@@ -2,12 +2,12 @@
 
 A small Nx monorepo containing a Next.js web app, an Expo mobile app, an
 Express/Apollo GraphQL API, and a PostgreSQL database accessed through Prisma.
-The web and mobile apps use the same todo API and shared GraphQL operations.
+The MedPrep web app uses Better Auth and the GraphQL API for its learning
+features; the mobile app currently uses the shared todo API.
 
-> The todo app is currently a local-development example. It has no user
-> accounts, authorization, or production deployment configuration. Do not
-> expose the development database credentials or local API directly to the
-> public internet.
+> This workspace is configured for local development. Do not expose
+> development database credentials or the local API directly to the public
+> internet.
 
 ## Contents
 
@@ -29,16 +29,18 @@ The web and mobile apps use the same todo API and shared GraphQL operations.
 ## Features
 
 - Create, list, complete, and delete todos.
-- Persist todos in PostgreSQL.
-- Use the same GraphQL API from the Next.js and Expo apps.
+- Practice and review medical entrance questions.
+- Save bookmarks, attempts, and learning progress in PostgreSQL.
+- Sign in with email/password or optional Google OAuth using Better Auth.
+- Use the GraphQL API from the web app and mobile todo app.
 - Share GraphQL schema and operation strings through the contracts library.
 - Run projects and tasks through Nx.
 - Build and run the local database with Docker Compose.
 
 ## Technology
 
-- **Workspace:** Nx with npm workspaces
-- **Web:** Next.js, React, TypeScript
+- **Workspace:** Nx with Yarn workspaces
+- **Web:** Next.js, React, TypeScript, Better Auth
 - **Mobile:** Expo, React Native, TypeScript
 - **API:** Express 5, Apollo Server, GraphQL
 - **Database:** PostgreSQL 16, Prisma ORM 7
@@ -49,16 +51,16 @@ The web and mobile apps use the same todo API and shared GraphQL operations.
 ```text
 .
 ├── apps/
-│   ├── backend/             # Express server, Apollo GraphQL API, todo resolvers
+│   ├── backend/             # Express server, Apollo GraphQL API and resolvers
 │   ├── backend-e2e/         # Backend end-to-end test project
-│   ├── frontend/            # Next.js todo web application
+│   ├── frontend/            # Next.js MedPrep learning application
 │   ├── frontend-e2e/        # Cypress end-to-end test project
 │   └── mobile/              # Expo / React Native application
 │       ├── index.js         # Expo entry point
 │       └── src/app/         # Mobile screen and GraphQL API client
 ├── libs/
-│   ├── auth/                # Authentication library placeholder
-│   ├── contracts/           # Shared GraphQL schema and todo operations
+│   ├── auth/                # Better Auth configuration
+│   ├── contracts/           # Shared GraphQL schema and operations
 │   ├── database/            # Prisma schema, migrations, and database client
 │   └── shared/              # Shared library placeholder
 ├── tools/                   # Workspace scripts and tooling
@@ -74,8 +76,8 @@ The web and mobile apps use the same todo API and shared GraphQL operations.
 Install the following before setting up the project:
 
 1. **Git** to clone the repository.
-2. **Node.js and npm.** Use a current Node.js LTS release compatible with the
-   installed Nx and Expo packages.
+2. **Node.js and Yarn.** Use a current Node.js LTS release compatible with the
+   installed Nx and Expo packages; enable Yarn through Corepack if needed.
 3. **Docker Desktop** (Windows/macOS) or Docker Engine with the Compose plugin
    (Linux), with Docker running when you start the database.
 4. **For native mobile testing:** Android Studio and an Android emulator, or
@@ -87,7 +89,7 @@ Check that the tools are available:
 ```sh
 git --version
 node --version
-npm --version
+yarn --version
 docker --version
 docker compose version
 ```
@@ -102,14 +104,14 @@ git clone https://github.com/OWNER/REPOSITORY.git
 cd REPOSITORY
 ```
 
-Install the locked npm workspace dependencies:
+Install the locked Yarn workspace dependencies:
 
 ```sh
-npm ci
+yarn install --frozen-lockfile
 ```
 
-Use the root `package-lock.json` and `npm ci` so workspace packages install
-consistently. You do not need to install each app or library separately.
+Use the root `yarn.lock` so workspace packages install consistently. You do not
+need to install each app or library separately.
 
 ## Configure the environment
 
@@ -128,7 +130,12 @@ Copy-Item .env.example .env
 ```
 
 The root `.env.example` contains the local PostgreSQL connection string and
-development CORS origins. The connection settings must match the PostgreSQL
+development CORS origins. It also contains Better Auth settings for local
+email/password accounts. Replace `BETTER_AUTH_SECRET` with a random secret
+before deployment. Google sign-in is optional; configure `GOOGLE_CLIENT_ID` and
+`GOOGLE_CLIENT_SECRET` and register
+`http://localhost:3000/api/auth/callback/google` as an authorized redirect URI
+in Google Cloud to enable it. The connection settings must match the PostgreSQL
 service in `compose.yaml` (database `saas_project`, user `devuser`, host port
 `5433`). Keep the generated `.env` local; it is ignored by Git. Do not commit
 credentials, production connection strings, or private API keys.
@@ -147,23 +154,24 @@ Restart the frontend after changing environment variables.
 Start PostgreSQL and wait for its health check:
 
 ```sh
-npm run db:up
+yarn db:up
 ```
 
 Apply the migration files already present in the repository:
 
 ```sh
-npm run db:migrate
+yarn db:migrate
 ```
 
 Generate the Prisma client if required:
 
 ```sh
-npm run db:generate
+yarn db:generate
 ```
 
-The migration creates the `Todo` table. Migration and client-generation
-commands read `DATABASE_URL` from the root `.env`.
+The migrations create the Better Auth tables and MedPrep learning data tables
+alongside the existing `Todo` table. Migration and client-generation commands
+read `DATABASE_URL` from the root `.env`.
 
 ## Run the applications
 
@@ -172,7 +180,7 @@ commands read `DATABASE_URL` from the root `.env`.
 After the database is ready and migrations are applied:
 
 ```sh
-npm run dev
+yarn dev
 ```
 
 Open:
@@ -181,24 +189,26 @@ Open:
 - **GraphQL API:** <http://localhost:3333/graphql>
 - **API health endpoint:** <http://localhost:3333/api>
 
-Todos are stored in the shared local database. The example app does not require
-sign-in.
+MedPrep accounts, questions, attempts, and bookmarks are stored in local
+PostgreSQL and accessed through the GraphQL API. Practice questions are not
+seeded automatically; add them through the admin workspace after granting your
+account the `admin` role in Prisma Studio.
 
 ### Start the web app or backend separately
 
 In separate terminals, run:
 
 ```sh
-npm run dev:backend
+yarn dev:backend
 ```
 
 ```sh
-npm run dev:frontend
+yarn dev:frontend
 ```
 
-The database must be running before starting the backend. The backend prints
-the GraphQL URL when it starts. If a required service is stopped, start it and
-reload the relevant app.
+The database must be running before starting either app. The frontend needs
+the backend running for learning data and authenticated GraphQL requests. The
+backend prints the GraphQL URL when it starts.
 
 ### Start the Expo mobile app
 
@@ -302,39 +312,39 @@ Run commands from the repository root:
 
 | Command | Purpose |
 | --- | --- |
-| `npm ci` | Install dependencies from the npm lockfile |
-| `npm run dev` | Run the web app and backend together |
-| `npm run dev:frontend` | Run only the Next.js app |
-| `npm run dev:backend` | Run only the GraphQL backend |
-| `npx nx start mobile` | Start the Expo application |
-| `npm run db:up` | Start the local PostgreSQL container |
-| `npm run db:down` | Stop the container and network, retaining database data |
-| `npm run db:logs` | Follow PostgreSQL logs |
-| `npm run db:migrate` | Create/apply Prisma development migrations |
-| `npm run db:generate` | Generate Prisma Client from the schema |
-| `npm run db:push` | Push schema changes without creating a migration |
-| `npm run db:studio` | Open Prisma Studio |
-| `npm run build:frontend` | Build the web app |
-| `npm run build:backend` | Build the backend |
-| `npm run build:all` | Run Nx build targets across projects |
-| `npm run format` | Format files using Nx formatting |
-| `npx nx show projects` | List Nx projects |
-| `npx nx graph` | Visualize project dependencies |
+| `yarn install --frozen-lockfile` | Install dependencies from `yarn.lock` |
+| `yarn dev` | Run the web app and backend together |
+| `yarn dev:frontend` | Run only the Next.js app |
+| `yarn dev:backend` | Run only the GraphQL backend |
+| `yarn nx start mobile` | Start the Expo application |
+| `yarn db:up` | Start the local PostgreSQL container |
+| `yarn db:down` | Stop the container and network, retaining database data |
+| `yarn db:logs` | Follow PostgreSQL logs |
+| `yarn db:migrate` | Create/apply Prisma development migrations |
+| `yarn db:generate` | Generate Prisma Client from the schema |
+| `yarn db:push` | Push schema changes without creating a migration |
+| `yarn db:studio` | Open Prisma Studio |
+| `yarn build:frontend` | Build the web app |
+| `yarn build:backend` | Build the backend |
+| `yarn build:all` | Run Nx build targets across projects |
+| `yarn format` | Format files using Nx formatting |
+| `yarn nx show projects` | List Nx projects |
+| `yarn nx graph` | Visualize project dependencies |
 
 For a project-specific target, Nx uses:
 
 ```sh
-npx nx <target> <project>
+yarn nx <target> <project>
 ```
 
 For example:
 
 ```sh
-npx nx build frontend
-npx nx build backend
+yarn nx build frontend
+yarn nx build backend
 ```
 
-Use `npx nx show project <project>` to inspect the targets available for a
+Use `yarn nx show project <project>` to inspect the targets available for a
 project. A continuous development server should run in its own terminal.
 
 ## Database development
@@ -345,21 +355,21 @@ migration files are at `libs/database/prisma/migrations`.
 When changing the schema, create and apply a named migration:
 
 ```sh
-npm run db:migrate -- --name describe_your_change
+yarn db:migrate --name describe_your_change
 ```
 
 Review and commit the generated migration along with the schema change. The
 Prisma client is generated under `libs/database/src/generated/prisma`; it is
 generated output and should not be edited by hand.
 
-`npm run db:push` is available for local prototyping when you intentionally do
+`yarn db:push` is available for local prototyping when you intentionally do
 not want a migration. Prefer migrations for changes that should be reviewed,
 shared, or deployed.
 
 Stop the local database without deleting its data:
 
 ```sh
-npm run db:down
+yarn db:down
 ```
 
 The Docker Compose configuration uses a named volume. Avoid
@@ -370,9 +380,9 @@ database and all of its data.
 
 ### The API cannot be reached
 
-1. Confirm PostgreSQL is running with `npm run db:up`.
-2. Confirm migrations have been applied with `npm run db:migrate`.
-3. Start the backend with `npm run dev:backend` or `npm run dev`.
+1. Confirm PostgreSQL is running with `yarn db:up`.
+2. Confirm migrations have been applied with `yarn db:migrate`.
+3. Start the backend with `yarn dev:backend` or `yarn dev`.
 4. Open <http://localhost:3333/api> on the development computer. It should
    return a JSON welcome message.
 5. On a physical mobile device, use the computer's LAN address in
@@ -387,7 +397,7 @@ configuration.
 
 - Make sure Docker is running.
 - Check whether another process is using port `5433`.
-- Inspect container output with `npm run db:logs`.
+- Inspect container output with `yarn db:logs`.
 - Confirm `.env` has a `DATABASE_URL` consistent with the Compose database,
   user, password, and host port.
 
@@ -403,8 +413,8 @@ configuration.
 ### Nx or dependency installation issues
 
 - Run commands from the repository root.
-- Use `npm ci` after cloning or when restoring a clean dependency installation.
-- Check `npx nx show projects` to confirm Nx can discover the workspace apps
+- Use `yarn install --frozen-lockfile` after cloning or when restoring a clean dependency installation.
+- Check `yarn nx show projects` to confirm Nx can discover the workspace apps
   and libraries.
 
 ## Contributing
@@ -422,4 +432,3 @@ Shared GraphQL schema and operations belong in `libs/contracts`; database
 access belongs in `libs/database`; API resolver and server behavior belongs in
 `apps/backend`. The web and mobile clients should consume the shared contracts
 rather than maintaining separate copies of the GraphQL operation strings.
-

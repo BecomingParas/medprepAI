@@ -1,4 +1,10 @@
-import { postAuthenticated } from '@/lib/api-client';
+import {
+  DELETE_CHAPTER_MUTATION,
+  DELETE_QUESTION_MUTATION,
+  SAVE_CHAPTER_MUTATION,
+  SAVE_QUESTION_MUTATION,
+} from '@sass-project/contracts';
+import { graphqlRequest } from '@/lib/graphql-client';
 
 export type QuestionInput = {
   id?: string;
@@ -24,24 +30,14 @@ export type ChapterInput = {
   overview: string;
 };
 
-type AdminAction =
-  | { action: 'saveQuestion'; data: QuestionInput }
-  | { action: 'deleteQuestion'; data: { id: string } }
-  | { action: 'saveChapter'; data: ChapterInput }
-  | { action: 'deleteChapter'; data: { id: string } };
-
-function runAdminAction<T>(payload: AdminAction): Promise<T> {
-  return postAuthenticated<T>('/api/admin', payload);
-}
-
 export const saveQuestion = ({ data }: { data: QuestionInput }) =>
-  runAdminAction<{ ok: true }>({ action: 'saveQuestion', data });
+  graphqlRequest<{ saveQuestion: boolean }>(SAVE_QUESTION_MUTATION, { input: data });
 
 export const deleteQuestion = ({ data }: { data: { id: string } }) =>
-  runAdminAction<{ ok: true }>({ action: 'deleteQuestion', data });
+  graphqlRequest<{ deleteQuestion: boolean }>(DELETE_QUESTION_MUTATION, data);
 
 export const saveChapter = ({ data }: { data: ChapterInput }) =>
-  runAdminAction<{ ok: true }>({ action: 'saveChapter', data });
+  graphqlRequest<{ saveChapter: boolean }>(SAVE_CHAPTER_MUTATION, { input: data });
 
 export const deleteChapter = ({ data }: { data: { id: string } }) =>
-  runAdminAction<{ ok: true }>({ action: 'deleteChapter', data });
+  graphqlRequest<{ deleteChapter: boolean }>(DELETE_CHAPTER_MUTATION, data);

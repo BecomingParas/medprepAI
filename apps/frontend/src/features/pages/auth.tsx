@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { authClient } from "@/lib/auth-client";
 import { useAuth } from "@/hooks/useAuth";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
@@ -26,27 +26,37 @@ export default function AuthPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    if (mode === "up") {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: window.location.origin },
-      });
-      if (error) toast.error(error.message);
-      else toast.success("Check your email to confirm your account.");
-    } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) toast.error(error.message);
+    try {
+      const result =
+        mode === "up"
+          ? await authClient.signUp.email({
+              name: email.split("@")[0] ?? email,
+              email,
+              password,
+            })
+          : await authClient.signIn.email({ email, password });
+      if (result.error) {
+        toast.error(result.error.message);
+      } else {
+        router.replace("/dashboard");
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Authentication failed.");
+    } finally {
+      setBusy(false);
     }
-    setBusy(false);
   }
 
   async function google() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth` },
-    });
-    if (error) toast.error(error.message);
+    try {
+      const result = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/dashboard",
+      });
+      if (result.error) toast.error(result.error.message);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Google sign-in failed.");
+    }
   }
 
   return (
@@ -57,7 +67,7 @@ export default function AuthPage() {
         <p className="mb-3 text-[11px] font-semibold uppercase text-accent">Your learning workspace</p>
         <h1 className="text-3xl font-bold">{mode === "in" ? "Welcome back" : "Create account"}</h1>
         <p className="mt-2 text-muted-foreground">Your scores and weak topics are saved.</p>
-        <Button variant="outline" className="mt-8 w-full" onClick={google}>
+        <Button variant="outline" className="mt-8 w-full" onClick={() => void google()}>
           Continue with Google
         </Button>
         <div className="my-6 flex items-center gap-4 text-xs text-muted-foreground"><span className="flex-1 border-t"/>or with email<span className="flex-1 border-t"/></div>
@@ -68,7 +78,7 @@ export default function AuthPage() {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="pw">Password</Label>
-            <Input id="pw" autoComplete={mode==="in"?"current-password":"new-password"} type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Input id="pw" autoComplete={mode==="in"?"current-password":"new-password"} type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
           <Button className="w-full" disabled={busy}>
             {busy?<LoaderCircle className="animate-spin"/>:<ArrowRight/>}{busy?"Please wait…":mode === "in" ? "Sign in" : "Sign up"}

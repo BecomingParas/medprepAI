@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { learningOptions, saveAttempt } from "@/lib/learning";
 import { PageHeading } from "@/components/StudyUI";
 import { Clock, ArrowRight, ListChecks, Shuffle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 type Q = { id: string; subject: string; stem: string; options: string[]; correct_index: number; explanation: string };
 
 export default function MockPage() {
-  const { user } = useAuth();
+  const { data } = useSuspenseQuery(learningOptions());
   const [qs, setQs] = useState<Q[] | null>(null);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [left, setLeft] = useState(0);
@@ -30,14 +30,7 @@ export default function MockPage() {
   }, [left, qs, done]);
 
   async function start(n: number) {
-    const { data, error } = await supabase
-      .from("questions")
-      .select("id,subject,stem,options,correct_index,explanation");
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-    const picked = ((data ?? []) as unknown as Q[]).sort(() => Math.random() - 0.5).slice(0, n);
+    const picked = [...data.questions].sort(() => Math.random() - 0.5).slice(0, n);
     setQs(picked);
     setAnswers({});
     setDone(false);
@@ -45,17 +38,18 @@ export default function MockPage() {
   }
 
   async function submit() {
-    if (!qs || done || !user) return;
+    if (!qs || done) return;
     setDone(true);
-    const rows = qs
-      .filter((q) => answers[q.id] !== undefined)
-      .map((q) => ({
-        question_id: q.id,
-        selected_index: answers[q.id] as number,
-        is_correct: answers[q.id] === q.correct_index,
-        user_id: user.id,
-      }));
-    if (rows.length) await supabase.from("attempts").insert(rows);
+    try {
+      await Promise.all(
+        qs.flatMap((q) => {
+          const selectedIndex = answers[q.id];
+          return selectedIndex === undefined ? [] : [saveAttempt(q.id, selectedIndex)];
+        }),
+      );
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not save your mock exam.");
+    }
   }
 
   const score = qs?.filter((q) => answers[q.id] === q.correct_index).length ?? 0;

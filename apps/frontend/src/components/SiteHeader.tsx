@@ -6,7 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Menu, X, Stethoscope } from 'lucide-react';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
+import { authClient } from '@/lib/auth-client';
 import { useAuth } from '@/hooks/useAuth';
 import { ThemeToggle } from '@/components/LearningShell';
 import { Button } from '@/components/ui/button';
@@ -49,7 +49,7 @@ export function SiteHeader() {
   async function signOut() {
     await queryClient.cancelQueries();
     queryClient.clear();
-    const { error } = await supabase.auth.signOut();
+    const { error } = await authClient.signOut();
     if (error) {
       toast.error(error.message);
       return;

@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
-import type { Json } from '@/integrations/supabase/types';
-import { supabase } from '@/integrations/supabase/client';
+import { LEARNING_DATA_QUERY, SAVE_ATTEMPT_MUTATION, SET_BOOKMARK_MUTATION } from '@sass-project/contracts';
+import { graphqlRequest } from '@/lib/graphql-client';
 
 type LearningQuestion = {
   id: string;
@@ -8,7 +8,7 @@ type LearningQuestion = {
   chapter: string;
   difficulty: string;
   stem: string;
-  options: Json;
+  options: string[];
   correct_index: number;
   explanation: string;
   image_url: string | null;
@@ -21,51 +21,20 @@ type LearningQuestion = {
 
 type LearningData = {
   questions: LearningQuestion[];
-  attempts: { question_id: string; is_correct: boolean; created_at: string }[];
+  attempts: {
+    question_id: string | null;
+    is_correct: boolean;
+    created_at: string;
+    question: { subject: string; chapter: string; stem: string } | null;
+  }[];
   bookmarks: { question_id: string }[];
   chapters: { id: string; subject: string; name: string; overview: string }[];
   isAdmin: boolean;
 };
 
 async function readLearning(): Promise<LearningData> {
-  const [questions, attempts, bookmarks, chapters, roles] = await Promise.all([
-    supabase
-      .from('questions')
-      .select(
-        'id,subject,chapter,difficulty,stem,options,correct_index,explanation,image_url,provenance,source_title,source_url,source_year,source_notes',
-      )
-      .order('created_at')
-      .limit(1000),
-    supabase
-      .from('attempts')
-      .select('question_id,is_correct,created_at')
-      .order('created_at', { ascending: false })
-      .limit(5000),
-    supabase.from('bookmarks').select('question_id'),
-    supabase.from('chapters').select('id,subject,name,overview').order('subject').order('name'),
-    supabase.from('user_roles').select('role'),
-  ]);
-
-  for (const result of [questions, attempts, bookmarks, chapters, roles]) {
-    if (result.error) throw new Error(result.error.message);
-  }
-  if (
-    questions.data === null ||
-    attempts.data === null ||
-    bookmarks.data === null ||
-    chapters.data === null ||
-    roles.data === null
-  ) {
-    throw new Error('Supabase returned incomplete learning data.');
-  }
-
-  return {
-    questions: questions.data,
-    attempts: attempts.data,
-    bookmarks: bookmarks.data,
-    chapters: chapters.data,
-    isAdmin: roles.data.some((role) => role.role === 'admin'),
-  };
+  const result = await graphqlRequest<{ learningData: LearningData }>(LEARNING_DATA_QUERY);
+  return result.learningData;
 }
 
 export const learningOptions = () =>
@@ -78,5 +47,13 @@ export const learningOptions = () =>
 export type Question = LearningData['questions'][number];
 
 export function optionsOf(question: Question): string[] {
-  return Array.isArray(question.options) ? question.options.map(String) : [];
+  return question.options;
+}
+
+export async function saveAttempt(questionId: string, selectedIndex: number): Promise<void> {
+  await graphqlRequest<{ saveAttempt: boolean }>(SAVE_ATTEMPT_MUTATION, { questionId, selectedIndex });
+}
+
+export async function setBookmark(questionId: string, saved: boolean): Promise<void> {
+  await graphqlRequest<{ setBookmark: boolean }>(SET_BOOKMARK_MUTATION, { questionId, saved });
 }
