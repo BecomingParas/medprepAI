@@ -331,9 +331,11 @@ Run commands from the repository root:
 | `yarn nx show projects` | List Nx projects |
 | `yarn nx graph` | Visualize project dependencies |
 
-Vercel builds only the Next.js frontend. Its build command generates Prisma
-Client before building the app; configure `DATABASE_URL` in the Vercel project
-environment so Prisma can load its datasource configuration.
+Vercel builds only the Next.js frontend; it does not build the separate backend
+or mobile app. The build command generates Prisma Client and uses a local
+placeholder `DATABASE_URL`, so no database connection is needed at build time.
+Configure a real `DATABASE_URL` in Vercel if you use frontend server routes that
+access the database, such as `/api/visual`.
 
 For a project-specific target, Nx uses:
 

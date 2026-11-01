@@ -1,4 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "yarn db:generate && yarn build:frontend"
+  "buildCommand": "DATABASE_URL=postgresql://build:build@localhost:5432/build yarn db:generate && DATABASE_URL=postgresql://build:build@localhost:5432/build yarn build:frontend"
 }
