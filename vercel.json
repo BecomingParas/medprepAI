@@ -1,4 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "outputDirectory": "apps/frontend/.next",
   "buildCommand": "DATABASE_URL=postgresql://build:build@localhost:5432/build yarn db:generate && DATABASE_URL=postgresql://build:build@localhost:5432/build BETTER_AUTH_SECRET=build-only-placeholder-secret-00000000000000000000000000000000 yarn build:frontend"
 }
