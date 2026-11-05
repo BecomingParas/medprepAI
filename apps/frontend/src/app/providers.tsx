@@ -2,6 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect, useState, type ReactNode } from 'react';
+import { SiteFooter, SiteHeader } from '@/components/SiteHeader';
 import { Toaster } from '@/components/ui/sonner';
 
 export function AppProviders({ children }: { children: ReactNode }) {
@@ -24,7 +25,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <SiteHeader />
       {children}
+      <SiteFooter />
       <Toaster richColors />
     </QueryClientProvider>
   );

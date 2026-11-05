@@ -149,6 +149,23 @@ NEXT_PUBLIC_GRAPHQL_URL=http://localhost:3333/graphql
 
 Restart the frontend after changing environment variables.
 
+The Contact page and account verification/password recovery use Resend. Configure
+these server-only variables in the root `.env` and in the deployment environment:
+
+```dotenv
+RESEND_API_KEY=re_...
+CONTACT_EMAIL=your-inbox@example.com
+CONTACT_FROM_EMAIL=MedPrep AI Nepal <contact@your-verified-domain.example>
+```
+
+Verify the sender domain with Resend before using the form. Never expose or
+commit the Resend API key. The form returns a configuration error until all
+three variables are set.
+
+Set `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` only when both Google OAuth server
+credentials are configured. Account creation requires a verified email address;
+verification and password recovery links use the same verified Resend sender.
+
 ## Start the database and apply migrations
 
 Start PostgreSQL and wait for its health check:
@@ -332,10 +349,11 @@ Run commands from the repository root:
 | `yarn nx graph` | Visualize project dependencies |
 
 Vercel builds only the Next.js frontend; it does not build the separate backend
-or mobile app. The build command generates Prisma Client and uses a local
-placeholder `DATABASE_URL`, so no database connection is needed at build time.
-Configure a real `DATABASE_URL` in Vercel if you use frontend server routes that
-access the database, such as `/api/visual`.
+or mobile app. The build command generates Prisma Client and uses build-only
+placeholder values for `DATABASE_URL` and `BETTER_AUTH_SECRET`, so no database
+connection or production auth secret is needed at build time. Configure real
+runtime values in Vercel for frontend server routes that use them, such as
+authentication or `/api/visual`.
 
 For a project-specific target, Nx uses:
 

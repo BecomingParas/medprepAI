@@ -17,7 +17,7 @@ export default function GlobalError({ reset }: { reset: () => void }) {
             <div className="mt-6 flex justify-center gap-2">
               <Button onClick={reset}>Try again</Button>
               <Button asChild variant="outline">
-                <Link href="/">Go home</Link>
+                <Link href="/home">Go home</Link>
               </Button>
             </div>
           </div>

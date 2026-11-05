@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, type ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { LearningShell } from '@/components/LearningShell';
 import { useAuth } from '@/hooks/useAuth';
@@ -22,13 +23,27 @@ function WorkspaceLoading() {
 
 export function ProtectedWorkspace({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
+  const pathname = usePathname();
   const router = useRouter();
+  const isPublicStudyPage = [
+    '/lessons',
+    '/practice',
+    '/mock',
+    '/past-papers',
+    '/tutor',
+  ].includes(pathname);
+  const requiresAuthentication = !isPublicStudyPage;
 
   useEffect(() => {
-    if (!loading && !user) router.replace('/auth');
-  }, [loading, router, user]);
+    if (requiresAuthentication && !loading && !user) {
+      router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+    }
+  }, [loading, requiresAuthentication, router, user]);
 
-  if (loading || !user) return <WorkspaceLoading />;
+  if (requiresAuthentication && (loading || !user)) return <WorkspaceLoading />;
+  if (isPublicStudyPage) {
+    return <Suspense fallback={<WorkspaceLoading />}>{children}</Suspense>;
+  }
 
   return (
     <Suspense fallback={<WorkspaceLoading />}>

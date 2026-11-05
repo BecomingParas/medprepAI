@@ -21,12 +21,14 @@ export default function LearningError({
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight">This page didn&apos;t load</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong. You can try again or return to your dashboard.
+          The learning service may be unavailable. Start the backend with
+          <code className="mx-1 rounded bg-muted px-1.5 py-0.5">yarn dev</code>
+          or check <code>NEXT_PUBLIC_GRAPHQL_URL</code>, then try again.
         </p>
         <div className="mt-6 flex justify-center gap-2">
           <Button onClick={reset}>Try again</Button>
           <Button asChild variant="outline">
-            <Link href="/dashboard">Dashboard</Link>
+            <Link href="/home">Home</Link>
           </Button>
         </div>
       </div>

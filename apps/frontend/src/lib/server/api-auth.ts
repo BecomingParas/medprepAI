@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { auth } from '@sass-project/auth';
+import { getAuth } from '@sass-project/auth';
 import { NextResponse } from 'next/server';
 
 export class ApiError extends Error {
@@ -28,7 +28,7 @@ export function isRecord(value: unknown): value is Record<string, unknown> {
 type AuthenticatedUser = { id: string; role?: string | null };
 
 export async function requireAuthenticatedUser(request: Request): Promise<AuthenticatedUser> {
-  const session = await auth.api.getSession({ headers: request.headers });
+  const session = await getAuth().api.getSession({ headers: request.headers });
   if (!session) throw new ApiError('Sign in to continue.', 401);
   return session.user;
 }

@@ -1,0 +1,9 @@
+export { FeatureHighlights } from './components/feature-highlights';
+export { FaqSection } from './components/faq-section';
+export { HomeHeroSection } from './components/hero';
+export { LandingPractice } from './components/landing-practice';
+export { LandingCtaSection } from './components/landing-cta-section';
+export { LearningPathSection } from './components/learning-path-section';
+export { SampleQuestionSection } from './components/sample-question-section';
+export { SourceTrustSection } from './components/source-trust-section';
+export { SubjectSection } from './components/subject-section';

@@ -1162,6 +1162,47 @@
 			"isBackground": true,
 			"problemMatcher": [],
 			"group": "build"
+		},
+		{
+			"label": "Verify auth import build",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"frontend:build:development",
+				"--outputStyle=stream"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Rebuild auth import uncached",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"frontend:build:development",
+				"--outputStyle=stream",
+				"--skipNxCache"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify email module resolution",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"nx",
+				"run",
+				"frontend:build:development",
+				"--outputStyle=stream",
+				"--skipNxCache"
+			],
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }

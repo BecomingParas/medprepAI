@@ -3,7 +3,7 @@ import type { Prisma, PrismaClient } from '@sass-project/database';
 
 type LearningUser = {
   id: string;
-  role: string;
+  role?: string | null;
 };
 
 type LearningContext = {
@@ -130,28 +130,31 @@ export const learningResolvers = {
       _args: Record<string, never>,
       { prisma, user }: LearningContext,
     ) => {
-      const currentUser = requireUser(user);
       const [questions, attempts, bookmarks, chapters] = await Promise.all([
         prisma.question.findMany({ orderBy: { createdAt: 'asc' }, take: 1000 }),
-        prisma.attempt.findMany({
-          where: { userId: currentUser.id },
-          orderBy: { createdAt: 'desc' },
-          take: 5000,
-          include: { question: true },
-        }),
-        prisma.bookmark.findMany({
-          where: { userId: currentUser.id },
-          select: { questionId: true },
-        }),
+        user
+          ? prisma.attempt.findMany({
+              where: { userId: user.id },
+              orderBy: { createdAt: 'desc' },
+              take: 5000,
+              include: { question: true },
+            })
+          : Promise.resolve([]),
+        user
+          ? prisma.bookmark.findMany({
+              where: { userId: user.id },
+              select: { questionId: true },
+            })
+          : Promise.resolve([]),
         prisma.chapter.findMany({ orderBy: [{ subject: 'asc' }, { name: 'asc' }] }),
       ]);
 
       return {
         questions,
-        attempts,
+        attempts: attempts ?? [],
         bookmarks: bookmarks.map(({ questionId }) => ({ question_id: questionId })),
         chapters,
-        isAdmin: currentUser.role === 'admin',
+        isAdmin: user?.role === 'admin',
       };
     },
   },

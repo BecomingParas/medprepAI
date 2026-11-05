@@ -99,7 +99,7 @@ export function LearningShell({ children }: { children: ReactNode }) {
       toast.error(error.message);
       return;
     }
-    router.replace('/auth');
+    router.replace('/login');
   }
 
   const navigation = (
@@ -169,10 +169,10 @@ export function LearningShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen md:pl-64">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col overflow-y-auto border-r bg-card px-5 pb-5 md:flex">
+      <aside className="fixed bottom-0 left-0 top-[76px] z-30 hidden w-64 flex-col overflow-y-auto border-r bg-card px-5 pb-5 md:flex">
         {navigation}
       </aside>
-      <header className="sticky top-0 z-20 flex h-[72px] items-center justify-between gap-3 border-b bg-background/95 px-5 backdrop-blur md:px-10">
+      <header className="sticky top-[76px] z-20 flex h-[72px] items-center justify-between gap-3 border-b bg-background/95 px-5 backdrop-blur md:px-10">
         <div className="flex min-w-0 items-center gap-3">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
@@ -212,7 +212,7 @@ export function LearningShell({ children }: { children: ReactNode }) {
               <DropdownMenuLabel>MedPrep AI Nepal</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href="/">
+                <Link href="/home">
                   <Home />
                   Visit home
                 </Link>
@@ -235,10 +235,6 @@ export function LearningShell({ children }: { children: ReactNode }) {
       <div id="main-content" className="learning-content study-enter">
         {children}
       </div>
-      <footer className="mx-5 flex flex-wrap justify-between gap-2 border-t py-6 text-[11px] text-muted-foreground md:mx-10">
-        <span>© 2026 MedPrep AI Nepal</span>
-        <span>Independent preparation · Not affiliated with MEC</span>
-      </footer>
     </div>
   );
 }

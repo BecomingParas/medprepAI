@@ -8,7 +8,7 @@ import 'dotenv/config';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@as-integrations/express5';
 import { learningTypeDefs, todoTypeDefs } from '@sass-project/contracts';
-import { auth } from '@sass-project/auth';
+import { getAuth } from '@sass-project/auth';
 import { prisma } from '@sass-project/database';
 import express from 'express';
 import type { IncomingHttpHeaders } from 'http';
@@ -105,6 +105,7 @@ const graphqlServer = new ApolloServer({
 });
 
 async function startServer() {
+  const auth = getAuth();
   await graphqlServer.start();
 
   app.use(

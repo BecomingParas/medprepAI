@@ -1,11 +1,1 @@
-"use client";
-
-import Link from 'next/link';
-import {useSuspenseQuery} from '@tanstack/react-query';
-import {useState} from 'react';
-import {BookOpen,ArrowRight} from 'lucide-react';
-import {learningOptions} from '@/lib/learning';
-import {Button} from '@/components/ui/button';
-import {PageHeading,StudySegments} from '@/components/StudyUI';
-import {LessonVisual} from '@/components/LessonVisual';
-export default function Lessons(){const {data}=useSuspenseQuery(learningOptions());const [subject,setSubject]=useState('Biology');const [selected,setSelected]=useState<string|null>(null);const qs=data.questions.filter(q=>q.subject===subject&&(!selected||q.chapter===selected));return <><PageHeading eyebrow="See the science" title="Visual lessons" description="Physics, Chemistry and Biology, one concept at a time."/><div className="my-7"><StudySegments values={['Biology','Physics','Chemistry']} value={subject} onChange={s=>{setSubject(s);setSelected(null);}} label="Lesson subject"/></div><div className="grid gap-8 lg:grid-cols-[240px_1fr]"><nav aria-label="Chapters" className="space-y-1 lg:border-r lg:pr-5"><h2 className="mb-3 text-sm font-semibold">{subject} topics</h2>{data.chapters.filter(c=>c.subject===subject).map(c=><Button key={c.id} className="h-auto w-full justify-start whitespace-normal py-3 text-left" variant={selected===c.name?'secondary':'ghost'} onClick={()=>setSelected(c.name)}><BookOpen className="shrink-0"/>{c.name}</Button>)}</nav><section><div className="border-b pb-6"><h2 className="text-xl font-bold">{subject==='Biology'?'Heart & circulation':subject==='Physics'?"Newton’s second law":'Chemical bonds'}</h2><p className="mt-1 text-xs text-muted-foreground">Foundation concept · {subject}</p><LessonVisual subject={subject}/></div><h2 className="mt-6 text-lg font-bold">{selected??subject} · concept notes</h2><div className="mt-4 space-y-5">{qs.slice(0,6).map(q=><div key={q.id} className="border-b pb-4"><h3 className="text-sm font-semibold">{q.stem}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{q.explanation}</p><Button asChild variant="link" className="mt-2 px-0"><Link href={`/practice?question=${encodeURIComponent(q.id)}`}>Test your understanding <ArrowRight/></Link></Button></div>)}</div>{!qs.length&&<p className="mt-6 text-muted-foreground">No concept notes in this chapter yet.</p>}</section></div></>}
+export { default } from '@/features/learning/components/LearningWorkspace';

@@ -9,12 +9,22 @@ export async function graphqlRequest<T>(
   query: string,
   variables?: Record<string, unknown>,
 ): Promise<T> {
-  const response = await fetch(graphqlUrl, {
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query, variables }),
-  });
+  let response: Response;
+  try {
+    response = await fetch(graphqlUrl, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, variables }),
+    });
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw new Error(
+        `Unable to reach the learning API at ${graphqlUrl}. Start the backend with "yarn dev" or configure NEXT_PUBLIC_GRAPHQL_URL.`,
+      );
+    }
+    throw error;
+  }
   const result = (await response.json()) as GraphQLResponse<T>;
   if (!response.ok || result.errors?.length) {
     throw new Error(
