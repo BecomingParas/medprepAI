@@ -20,9 +20,11 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@sass-project/auth": ["../../libs/auth/src/lib/auth.ts"],
+      "@sass-project/auth": ["../../libs/auth/src/index.ts"],
+      "@sass-project/auth/client": ["../../libs/auth/src/client.ts"],
       "@sass-project/contracts": ["../../libs/contracts/src/index.ts"],
-      "@sass-project/database": ["../../libs/database/src/lib/prisma.ts"]
+      "@sass-project/database": ["../../libs/database/src/lib/prisma.ts"],
+      "@sass-project/shared": ["../../libs/shared/src/index.ts"]
     },
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
@@ -83,6 +85,9 @@
     },
     {
       "path": "../../libs/auth"
+    },
+    {
+      "path": "../../libs/shared"
     }
   ]
 }

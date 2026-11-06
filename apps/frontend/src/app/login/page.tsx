@@ -5,6 +5,12 @@ import type { FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { z } from 'zod';
+import {
+  emailSchema,
+  passwordSchema,
+  signInSchema,
+  signUpSchema,
+} from '@sass-project/shared';
 import { Eye, EyeOff, GraduationCap, LoaderCircle, Stethoscope } from 'lucide-react';
 import { useForm, type FieldErrors, type Resolver } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -32,15 +38,9 @@ type AuthValues = {
 };
 
 const schemas = {
-  login: z.object({
-    email: z.string().trim().email('Enter a valid email address.').max(254),
-    password: z.string().min(1, 'Enter your password.').max(128),
-  }),
-  register: z
-    .object({
-      name: z.string().trim().min(2, 'Enter your name.').max(80, 'Name must be 80 characters or fewer.'),
-      email: z.string().trim().email('Enter a valid email address.').max(254),
-      password: z.string().min(8, 'Use at least 8 characters.').max(128, 'Password is too long.'),
+  login: signInSchema,
+  register: signUpSchema
+    .extend({
       confirmPassword: z.string().min(1, 'Confirm your password.'),
     })
     .refine((value) => value.password === value.confirmPassword, {
@@ -48,11 +48,11 @@ const schemas = {
       path: ['confirmPassword'],
     }),
   email: z.object({
-    email: z.string().trim().email('Enter a valid email address.').max(254),
+    email: emailSchema,
   }),
   reset: z
     .object({
-      password: z.string().min(8, 'Use at least 8 characters.').max(128, 'Password is too long.'),
+      password: passwordSchema,
       confirmPassword: z.string().min(1, 'Confirm your password.'),
     })
     .refine((value) => value.password === value.confirmPassword, {

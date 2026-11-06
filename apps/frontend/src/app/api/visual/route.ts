@@ -4,6 +4,7 @@ import {
   apiErrorResponse,
   isRecord,
   parseJson,
+  requireAdmin,
   requireAuthenticatedUser,
 } from '@/lib/server/api-auth';
 import { prisma } from '@sass-project/database';
@@ -13,7 +14,8 @@ const MODEL = 'openai/gpt-image-2.5-sunburst';
 
 export async function POST(request: Request) {
   try {
-    await requireAuthenticatedUser(request);
+    const user = await requireAuthenticatedUser(request);
+    requireAdmin(user);
     const payload = await parseJson(request);
     if (!isRecord(payload) || typeof payload.questionId !== 'string') {
       throw new ApiError('A question id is required.', 400);

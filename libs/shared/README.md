@@ -1,3 +1,6 @@
-# shared
+# Shared contracts
 
-This library was generated with [Nx](https://nx.dev).
+`@sass-project/shared` contains framework-independent role and permission
+identifiers, authentication/request validation schemas, common API response
+types, and shared authentication types. It depends only on Zod and must not
+import Better Auth, Prisma, Next.js, or application code.

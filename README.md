@@ -59,10 +59,10 @@ features; the mobile app currently uses the shared todo API.
 │       ├── index.js         # Expo entry point
 │       └── src/app/         # Mobile screen and GraphQL API client
 ├── libs/
-│   ├── auth/                # Better Auth configuration
+│   ├── auth/                # Better Auth server, client, sessions and guards
 │   ├── contracts/           # Shared GraphQL schema and operations
 │   ├── database/            # Prisma schema, migrations, and database client
-│   └── shared/              # Shared library placeholder
+│   └── shared/              # Framework-independent roles, permissions and contracts
 ├── tools/                   # Workspace scripts and tooling
 ├── compose.yaml             # Local PostgreSQL service
 ├── .env.example             # Root local-development environment template
@@ -130,9 +130,11 @@ Copy-Item .env.example .env
 ```
 
 The root `.env.example` contains the local PostgreSQL connection string and
-development CORS origins. It also contains Better Auth settings for local
-email/password accounts. Replace `BETTER_AUTH_SECRET` with a random secret
-before deployment. Google sign-in is optional; configure `GOOGLE_CLIENT_ID` and
+development CORS origins. Better Auth requires `BETTER_AUTH_SECRET` (at least
+32 random characters) and `BETTER_AUTH_URL`; `FRONTEND_ORIGINS` accepts only
+explicit comma-separated origins. In production, set HTTPS origins and provide
+`BETTER_AUTH_URL` explicitly; session cookies are secure in production. Google
+sign-in is optional; configure both `GOOGLE_CLIENT_ID` and
 `GOOGLE_CLIENT_SECRET` and register
 `http://localhost:3000/api/auth/callback/google` as an authorized redirect URI
 in Google Cloud to enable it. The connection settings must match the PostgreSQL
@@ -165,6 +167,11 @@ three variables are set.
 Set `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` only when both Google OAuth server
 credentials are configured. Account creation requires a verified email address;
 verification and password recovery links use the same verified Resend sender.
+New accounts always receive the `student` role, which cannot be supplied by
+sign-up input. To bootstrap the first superadmin, create and verify an account
+normally, set `BOOTSTRAP_SUPERADMIN_EMAIL` to its address, then run
+`yarn db:seed`. The seed refuses unknown or unverified accounts and never
+creates users.
 
 ## Start the database and apply migrations
 
@@ -188,7 +195,9 @@ yarn db:generate
 
 The migrations create the Better Auth tables and MedPrep learning data tables
 alongside the existing `Todo` table. Migration and client-generation commands
-read `DATABASE_URL` from the root `.env`.
+read `DATABASE_URL` from the root `.env`. The role migration maps existing
+`user` roles to `student`, changes the default for new accounts, and restricts
+persisted roles to `superadmin`, `admin`, or `student`.
 
 ## Run the applications
 
@@ -338,6 +347,8 @@ Run commands from the repository root:
 | `yarn db:down` | Stop the container and network, retaining database data |
 | `yarn db:logs` | Follow PostgreSQL logs |
 | `yarn db:migrate` | Create/apply Prisma development migrations |
+| `yarn db:migrate:deploy` | Apply committed migrations in a deployment |
+| `yarn db:seed` | Promote an existing verified bootstrap account to superadmin |
 | `yarn db:generate` | Generate Prisma Client from the schema |
 | `yarn db:push` | Push schema changes without creating a migration |
 | `yarn db:studio` | Open Prisma Studio |
@@ -381,6 +392,9 @@ When changing the schema, create and apply a named migration:
 ```sh
 yarn db:migrate --name describe_your_change
 ```
+
+Use `yarn db:migrate:deploy` in deployment environments to apply committed
+migrations without creating new migration files.
 
 Review and commit the generated migration along with the schema change. The
 Prisma client is generated under `libs/database/src/generated/prisma`; it is

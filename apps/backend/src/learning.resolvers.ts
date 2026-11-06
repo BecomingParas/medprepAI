@@ -1,5 +1,6 @@
 import { GraphQLError } from 'graphql';
 import type { Prisma, PrismaClient } from '@sass-project/database';
+import { hasPermission, PERMISSIONS } from '@sass-project/shared';
 
 type LearningUser = {
   id: string;
@@ -46,7 +47,7 @@ function requireUser(user: LearningUser | null): LearningUser {
 
 function requireAdmin(user: LearningUser | null): LearningUser {
   const authenticatedUser = requireUser(user);
-  if (authenticatedUser.role !== 'admin') {
+  if (!hasPermission(authenticatedUser.role, PERMISSIONS.manageContent)) {
     throw new GraphQLError('Admin access required.', {
       extensions: { code: 'FORBIDDEN' },
     });
@@ -154,7 +155,7 @@ export const learningResolvers = {
         attempts: attempts ?? [],
         bookmarks: bookmarks.map(({ questionId }) => ({ question_id: questionId })),
         chapters,
-        isAdmin: user?.role === 'admin',
+        isAdmin: hasPermission(user?.role, PERMISSIONS.manageContent),
       };
     },
   },

@@ -2,6 +2,9 @@
   "name": "@sass-project/backend-e2e",
   "version": "0.0.1",
   "private": true,
+  "dependencies": {
+    "@sass-project/shared": "0.0.1"
+  },
   "nx": {
     "implicitDependencies": [
       "@sass-project/backend"

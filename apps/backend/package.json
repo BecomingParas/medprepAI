@@ -86,6 +86,7 @@
     "@sass-project/auth": "0.0.1",
     "@sass-project/contracts": "0.0.1",
     "@sass-project/database": "0.0.1",
+    "@sass-project/shared": "0.0.1",
     "express": "^5.1.0",
     "graphql": "^16.14.2"
   }

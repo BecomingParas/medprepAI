@@ -11,11 +11,17 @@
       "import": "./src/index.ts",
       "default": "./src/index.ts"
     },
+    "./client": {
+      "types": "./src/client.ts",
+      "import": "./src/client.ts",
+      "default": "./src/client.ts"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
     "@better-auth/prisma-adapter": "1.7.7",
     "better-auth": "^1.7.7",
-    "@sass-project/database": "0.0.1"
+    "@sass-project/database": "0.0.1",
+    "@sass-project/shared": "0.0.1"
   }
 }

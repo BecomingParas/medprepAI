@@ -18,6 +18,8 @@
     "db:logs": "docker compose logs -f postgres",
     "db:generate": "prisma generate --config libs/database/prisma.config.ts",
     "db:migrate": "prisma migrate dev --config libs/database/prisma.config.ts",
+    "db:migrate:deploy": "prisma migrate deploy --config libs/database/prisma.config.ts",
+    "db:seed": "prisma db seed --config libs/database/prisma.config.ts",
     "db:push": "prisma db push --config libs/database/prisma.config.ts",
     "db:studio": "prisma studio --config libs/database/prisma.config.ts",
     "lint": "nx affected --target=lint",
