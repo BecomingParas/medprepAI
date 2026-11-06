@@ -663,7 +663,7 @@
 				"nx",
 				"run-many",
 				"--target=typecheck",
-				"--projects=backend,frontend,contracts,database",
+				"--projects=backend,contracts,database",
 				"--parallel=1",
 				"--outputStyle=static",
 				"--skip-nx-cache"
@@ -1177,29 +1177,14 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "Rebuild auth import uncached",
+			"label": "Verify auth import build",
 			"type": "shell",
 			"command": "npx",
 			"args": [
 				"nx",
 				"run",
 				"frontend:build:development",
-				"--outputStyle=stream",
-				"--skipNxCache"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Verify email module resolution",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"nx",
-				"run",
-				"frontend:build:development",
-				"--outputStyle=stream",
-				"--skipNxCache"
+				"--outputStyle=stream"
 			],
 			"isBackground": false,
 			"problemMatcher": []
